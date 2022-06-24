@@ -10,10 +10,16 @@ use strict;
 use POE;
 use POE::Component::IRC::State;
 use POE::Component::IRC::Plugin::BotAddressed;
-use Wikimedia;
-use Wikipedia;
-use perlwikipedia;
-use DBI; 
+use DBI;
+
+# Issue modules
+#use Wikimedia;
+#use Wikipedia;
+#use perlwikipedia;
+
+# Replacement modules
+use MediaWiki::Bot qw(:constants);
+use WWW::Wikipedia;
 
 my %settings : shared;
 $settings{limit}   = 25;                            # Initial setting, report above 25% overlap
@@ -53,7 +59,7 @@ my $page_grabber=Perlwikipedia->new;
 
 #CONVERT this entire section
 #Now we'll set up the mechanism we'll use for editing/retrieving pages
-my $editor=Wikimedia->new;
+my $editor=MediaWiki::Bot->new;
 my $mwusername='COIBot';
 open(PASS,'COIBot-mw-password');          # A file with only the password, no carraige return
 sysread(PASS, my $mwpassword, -s(PASS));     # No password in sourcecode.
@@ -69,7 +75,7 @@ if ($login_status eq 'Success') { #We've logged in.
     $settings{enloginstatus} = 1;
 }
 
-my $eneditor=Wikipedia->new;
+my $eneditor=MediaWiki::Bot->new;
 my $enusername='COIBot';
 open(PASS,'COIBot-wp-password');          # A file with only the password, no carraige return
 sysread(PASS, my $enpassword, -s(PASS));     # No password in sourcecode.
@@ -95,27 +101,27 @@ close(PASS);
 $password=~s/\n//;                                                          # IRC password
 my $ircname        = 'coibot COI recognition bot';                         # IRC name
 
-my @rcchannels       = (                                                      # Listening to channels
-                      '#en.wikipedia',
-                      '#de.wikipedia',
-                      '#fr.wikipedia',
-                      '#it.wikipedia',
-                      '#nl.wikipedia',
-                      '#pl.wikipedia',                # 2 big ones not: ja (japanese) && zh (chinese)
-                      '#pt.wikipedia',
-                      '#es.wikipedia',
-                      '#no.wikipedia',
-                      '#ru.wikipedia',
-                      '#fi.wikipedia',
-                      '#sv.wikipedia'
-                     );         
-my @lwchannels       = (                                                      # Listening to channels
-                       $settings{ReportChannel1}, 
-                       $settings{ReportChannel2}, 
-                       $settings{StatsChannel}, 
-                       '#wikimedia-swmt',
-                       '#wikipedia-en-spam-bot'
-                     );         
+my @rcchannels     = (                                                      # Listening to channels
+    '#en.wikipedia',
+    '#de.wikipedia',
+    '#fr.wikipedia',
+    '#it.wikipedia',
+    '#nl.wikipedia',
+    '#pl.wikipedia',                # 2 big ones not: ja (japanese) && zh (chinese)
+    '#pt.wikipedia',
+    '#es.wikipedia',
+    '#no.wikipedia',
+    '#ru.wikipedia',
+    '#fi.wikipedia',
+    '#sv.wikipedia'
+);
+my @lwchannels     = (            # Listening to channels
+    $settings{ReportChannel1}, 
+    $settings{ReportChannel2}, 
+    $settings{StatsChannel}, 
+    '#wikimedia-swmt',
+    '#wikipedia-en-spam-bot'
+);         
 
 
 #declare the database goodies.
@@ -3257,7 +3263,6 @@ sub delete_mysql {
     my $value3=shift;
     my $mysql_handle;
     my $returnvalue = 0;
-    my $mysql_handle;
     my $query_handle;
     my $query;
     eval {
