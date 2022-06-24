@@ -54,12 +54,13 @@ $settings{savereporten} = "";
 my @months : shared;
 my @weekDays : shared;
 
-my $page_grabber=Perlwikipedia->new;
+#my $page_grabber=Perlwikipedia->new;
 
 #CONVERT this entire section
 #Now we'll set up the mechanism we'll use for editing/retrieving pages
+=pod
 my $editor=MediaWiki::Bot->new;
-my $mwusername='COIBot';
+my $mwusername='TNTPublic';
 open(PASS,'COIBot-mw-password');          # A file with only the password, no carraige return
 sysread(PASS, my $mwpassword, -s(PASS));     # No password in sourcecode.
 close(PASS);
@@ -89,11 +90,11 @@ if ($enlogin_status eq 'Success') { #We've logged in.
     print "Logged into Wikipedia.\n";
     $settings{metaloginstatus} = 1;
 }
-
+=cut
 
 #Declare all sorts of IRC-related goodness
-my $nickname       = 'COIBot';                                             # Bots nickname
-my $username       = 'COIBot';                                             # Bots username
+my $nickname       = 'cb_test';                                             # Bots nickname
+my $username       = 'cb_test';                                             # Bots username
 open(PASS,'coibot-password');                                              # A file with only the password, no carriage return
 sysread(PASS, my $password, -s(PASS));                                      # No password in sourcecode.
 close(PASS);
