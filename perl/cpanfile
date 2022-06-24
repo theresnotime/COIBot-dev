@@ -1,0 +1,6 @@
+# cpanfile
+requires 'MediaWiki::Bot', '5.007000';
+requires 'POE', '1.370';
+requires 'POE::Component::IRC::State', '6.93';
+requires 'DBI', '1.643';
+requires 'WWW::Wikipedia', '2.05';

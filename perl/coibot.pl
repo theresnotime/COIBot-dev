@@ -51,7 +51,6 @@ $settings{reporten} = "";
 $settings{savereport} = "";
 $settings{savereporten} = "";
 
-
 my @months : shared;
 my @weekDays : shared;
 
